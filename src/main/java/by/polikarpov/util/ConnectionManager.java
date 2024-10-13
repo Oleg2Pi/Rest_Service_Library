@@ -18,7 +18,7 @@ public class ConnectionManager {
                     properties.getProperty("password")
             );
         } catch (IOException e) {
-            throw new SQLException("Не загрузились данные БД", e);
+            throw new RuntimeException("Не загрузились данные БД", e);
         }
     }
 }

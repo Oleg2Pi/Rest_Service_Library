@@ -7,8 +7,7 @@ public class Readers {
     private Long id;
     private String readersName;
 
-    public Readers(Long id, String readersName) {
-        this.id = id;
+    public Readers(String readersName) {
         this.readersName = readersName;
     }
 
@@ -44,11 +43,11 @@ public class Readers {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Readers readers = (Readers) o;
-        return Objects.equals(id, readers.id) && Objects.equals(readersName, readers.readersName);
+        return Objects.equals(readersName, readers.readersName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, readersName);
+        return Objects.hash(readersName);
     }
 }

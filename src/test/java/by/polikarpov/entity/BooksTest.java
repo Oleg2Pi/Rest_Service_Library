@@ -8,8 +8,10 @@ class BooksTest {
 
     @Test
     void testConstructorWithParameters() {
-        Library library = new Library(1L, "Central Library");
-        Books book = new Books(1L, "Effective Java", "Joshua Bloch", library);
+        Library library = new Library("Central Library");
+        library.setId(1L);
+        Books book = new Books("Effective Java", "Joshua Bloch", library);
+        book.setId(1L);
 
         assertEquals(1L, book.getId());
         assertEquals("Effective Java", book.getTitle());
@@ -29,7 +31,7 @@ class BooksTest {
 
     @Test
     void testSettersAndGetters() {
-        Library library = new Library(1L, "Central Library");
+        Library library = new Library("Central Library");
         Books book = new Books();
 
         book.setId(3L);
@@ -45,11 +47,11 @@ class BooksTest {
 
     @Test
     void testEqualsAndHashCode() {
-        Library library1 = new Library(1L, "Central Library");
-        Library library2 = new Library(1L, "Central Library");
-        Books book1 = new Books(1L, "Effective Java", "Joshua Bloch", library1);
-        Books book2 = new Books(1L, "Effective Java", "Joshua Bloch", library2);
-        Books book3 = new Books(2L, "Clean Code", "Robert C. Martin", library1);
+        Library library1 = new Library("Central Library");
+        Library library2 = new Library("Central Library");
+        Books book1 = new Books("Effective Java", "Joshua Bloch", library1);
+        Books book2 = new Books("Effective Java", "Joshua Bloch", library2);
+        Books book3 = new Books("Clean Code", "Robert C. Martin", library1);
 
         assertEquals(book1, book2); // должны быть равными
         assertNotEquals(book1, book3); // не равны
@@ -59,8 +61,9 @@ class BooksTest {
 
     @Test
     void testToString() {
-        Library library = new Library(1L, "Central Library");
-        Books book = new Books(1L, "Effective Java", "Joshua Bloch", library);
+        Library library = new Library("Central Library");
+        Books book = new Books("Effective Java", "Joshua Bloch", library);
+        book.setId(1L);
 
         String expectedString = "Books{id=1, title='Effective Java', author='Joshua Bloch', library=Central Library}";
         assertEquals(expectedString, book.toString());

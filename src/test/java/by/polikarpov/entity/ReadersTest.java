@@ -8,7 +8,8 @@ class ReadersTest {
 
     @Test
     void testConstructorWithParameters() {
-        Readers reader = new Readers(1L, "John Doe");
+        Readers reader = new Readers("John Doe");
+        reader.setId(1L);
         assertEquals(1L, reader.getId());
         assertEquals("John Doe", reader.getReadersName());
     }
@@ -33,9 +34,9 @@ class ReadersTest {
 
     @Test
     void testEqualsAndHashCode() {
-        Readers reader1 = new Readers(1L, "John Doe");
-        Readers reader2 = new Readers(1L, "John Doe");
-        Readers reader3 = new Readers(2L, "Jane Doe");
+        Readers reader1 = new Readers("John Doe");
+        Readers reader2 = new Readers("John Doe");
+        Readers reader3 = new Readers("Jane Doe");
 
         assertEquals(reader1, reader2);
         assertNotEquals(reader1, reader3);
@@ -45,7 +46,8 @@ class ReadersTest {
 
     @Test
     void testToString() {
-        Readers reader = new Readers(1L, "John Doe");
+        Readers reader = new Readers("John Doe");
+        reader.setId(1L);
         String expectedString = "Readers{id=1, readersName='John Doe'}";
         assertEquals(expectedString, reader.toString());
     }

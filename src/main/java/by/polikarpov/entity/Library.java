@@ -6,8 +6,7 @@ public class Library {
     private Long id;
     private String LibraryName;
 
-    public Library(Long id, String libraryName) {
-        this.id = id;
+    public Library(String libraryName) {
         LibraryName = libraryName;
     }
 
@@ -43,11 +42,11 @@ public class Library {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Library library = (Library) o;
-        return Objects.equals(id, library.id) && Objects.equals(LibraryName, library.LibraryName);
+        return Objects.equals(LibraryName, library.LibraryName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, LibraryName);
+        return Objects.hash(LibraryName);
     }
 }

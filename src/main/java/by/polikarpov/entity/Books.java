@@ -8,13 +8,12 @@ public class Books {
     private String author;
     private Library library;
 
-    public Books(Long id, String title, String author, Library library) {
-        this.id = id;
+    public Books(String title, String author, Library library) {
         this.title = title;
         this.author = author;
         this.library = library;
-    }
 
+    }
     public Books() {
     }
 
@@ -65,11 +64,11 @@ public class Books {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Books books = (Books) o;
-        return Objects.equals(id, books.id) && Objects.equals(title, books.title) && Objects.equals(author, books.author) && Objects.equals(library, books.library);
+        return Objects.equals(title, books.title) && Objects.equals(author, books.author) && Objects.equals(library, books.library);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, author, library);
+        return Objects.hash(title, author, library);
     }
 }

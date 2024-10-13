@@ -8,7 +8,8 @@ class LibraryTest {
 
     @Test
     void testConstructorWithParameters() {
-        Library library = new Library(1L, "Main Library");
+        Library library = new Library("Main Library");
+        library.setId(1L);
         assertEquals(1L, library.getId());
         assertEquals("Main Library", library.getLibraryName());
     }
@@ -32,9 +33,9 @@ class LibraryTest {
 
     @Test
     void testEqualsAndHashCode() {
-        Library library1 = new Library(1L, "Main Library");
-        Library library2 = new Library(1L, "Main Library");
-        Library library3 = new Library(2L, "Other Library");
+        Library library1 = new Library("Main Library");
+        Library library2 = new Library("Main Library");
+        Library library3 = new Library("Other Library");
 
         assertEquals(library1, library2);
         assertNotEquals(library1, library3);
@@ -44,7 +45,8 @@ class LibraryTest {
 
     @Test
     void testToString() {
-        Library library = new Library(1L, "Main Library");
+        Library library = new Library("Main Library");
+        library.setId(1L);
         String expectedString = "Library{id=1, LibraryName='Main Library'}";
         assertEquals(expectedString, library.toString());
     }

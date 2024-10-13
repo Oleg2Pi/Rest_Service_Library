@@ -8,8 +8,8 @@ class BookLendingTest {
 
     @Test
     void testConstructorWithParameters() {
-        Readers reader = new Readers(1L, "John Doe");
-        Books book = new Books(1L, "Effective Java", "Joshua Bloch", new Library(1L, "Central Library"));
+        Readers reader = new Readers("John Doe");
+        Books book = new Books("Effective Java", "Joshua Bloch", new Library("Central Library"));
         BookLending lending = new BookLending(reader, book);
 
         assertEquals(reader, lending.getReader());
@@ -26,8 +26,8 @@ class BookLendingTest {
 
     @Test
     void testSettersAndGetters() {
-        Readers reader = new Readers(1L, "John Doe");
-        Books book = new Books(1L, "Effective Java", "Joshua Bloch", new Library(1L, "Central Library"));
+        Readers reader = new Readers("John Doe");
+        Books book = new Books("Effective Java", "Joshua Bloch", new Library("Central Library"));
         BookLending lending = new BookLending();
 
         lending.setReader(reader);
@@ -39,14 +39,14 @@ class BookLendingTest {
 
     @Test
     void testEqualsAndHashCode() {
-        Readers reader1 = new Readers(1L, "John Doe");
-        Readers reader2 = new Readers(1L, "John Doe");
-        Books book1 = new Books(1L, "Effective Java", "Joshua Bloch", new Library(1L, "Central Library"));
-        Books book2 = new Books(1L, "Effective Java", "Joshua Bloch", new Library(1L, "Central Library"));
+        Readers reader1 = new Readers("John Doe");
+        Readers reader2 = new Readers("John Doe");
+        Books book1 = new Books("Effective Java", "Joshua Bloch", new Library("Central Library"));
+        Books book2 = new Books("Effective Java", "Joshua Bloch", new Library("Central Library"));
 
         BookLending lending1 = new BookLending(reader1, book1);
         BookLending lending2 = new BookLending(reader2, book2);
-        BookLending lending3 = new BookLending(new Readers(2L, "Jane Doe"), book1);
+        BookLending lending3 = new BookLending(new Readers("Jane Doe"), book1);
 
         assertEquals(lending1, lending2);
         assertNotEquals(lending1, lending3);
@@ -56,8 +56,8 @@ class BookLendingTest {
 
     @Test
     void testToString() {
-        Readers reader = new Readers(1L, "John Doe");
-        Books book = new Books(1L, "Effective Java", "Joshua Bloch", new Library(1L, "Central Library"));
+        Readers reader = new Readers("John Doe");
+        Books book = new Books("Effective Java", "Joshua Bloch", new Library("Central Library"));
         BookLending lending = new BookLending(reader, book);
 
         String expectedString = "BookLending{reader=John Doe, book=Effective Java}";
