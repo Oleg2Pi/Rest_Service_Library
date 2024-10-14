@@ -4,9 +4,9 @@ import by.polikarpov.entity.Readers;
 import by.polikarpov.exception.DaoException;
 import by.polikarpov.util.ConnectionManager;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -100,11 +100,13 @@ public class ReadersDao implements Dao<Long, Readers> {
     @Override
     public Readers save(Readers entity) {
         try (var connection = ConnectionManager.getConnection();
-             var statement = connection.prepareStatement(SAVE_SQL, PreparedStatement.RETURN_GENERATED_KEYS)) {
+             var statement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, entity.getReadersName());
-            var result = statement.executeQuery();
-            if (result.next()) {
-                entity.setId(result.getLong("id"));
+            statement.executeUpdate();
+
+            var keys = statement.getGeneratedKeys();
+            if (keys.next()) {
+                entity.setId(keys.getLong("id"));
             }
             return entity;
         } catch (SQLException e) {

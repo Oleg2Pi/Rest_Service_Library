@@ -197,8 +197,9 @@ class LibraryDaoTest {
         // Мокаем ConnectionManager.getConnection()
         try (MockedStatic<ConnectionManager> connectionManagerMock = mockStatic(ConnectionManager.class)) {
             connectionManagerMock.when(ConnectionManager::getConnection).thenReturn(mockConnection);
-            when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
-            when(mockStatement.executeQuery()).thenReturn(mockResultSet);
+            when(mockConnection.prepareStatement(anyString(), eq(PreparedStatement.RETURN_GENERATED_KEYS))).thenReturn(mockStatement);
+            when(mockStatement.executeUpdate()).thenReturn(1);
+            when(mockStatement.getGeneratedKeys()).thenReturn(mockResultSet);
             when(mockResultSet.next()).thenReturn(true);
             when(mockResultSet.getLong("id")).thenReturn(generatedId);
 
@@ -211,9 +212,9 @@ class LibraryDaoTest {
             assertEquals(libraryToSave.getLibraryName(), savedLibrary.getLibraryName());
 
             // Проверяем, что все методы были вызваны ожидаемым образом
-            verify(mockConnection).prepareStatement(anyString());
+            verify(mockConnection).prepareStatement(anyString(), eq(PreparedStatement.RETURN_GENERATED_KEYS));
             verify(mockStatement).setString(1, libraryToSave.getLibraryName());
-            verify(mockStatement).executeQuery();
+            verify(mockStatement).executeUpdate();
         }
     }
 
@@ -224,7 +225,7 @@ class LibraryDaoTest {
         // Мокаем ConnectionManager.getConnection()
         try (MockedStatic<ConnectionManager> connectionManagerMock = mockStatic(ConnectionManager.class)) {
             connectionManagerMock.when(ConnectionManager::getConnection).thenReturn(mockConnection);
-            when(mockConnection.prepareStatement(anyString())).thenThrow(new SQLException("Database error"));
+            when(mockConnection.prepareStatement(anyString(), eq(PreparedStatement.RETURN_GENERATED_KEYS))).thenThrow(new SQLException("Database error"));
 
             // Проверяем, что DaoException взрывается
             DaoException daoException = assertThrows(DaoException.class, () -> libraryDao.save(libraryToSave));
@@ -233,7 +234,7 @@ class LibraryDaoTest {
             assertEquals("Database error", daoException.getCause().getMessage());
 
             // Проверяем, что prepareStatement был вызван
-            verify(mockConnection).prepareStatement(anyString());
+            verify(mockConnection).prepareStatement(anyString(), eq(PreparedStatement.RETURN_GENERATED_KEYS));
         }
     }
 

@@ -230,13 +230,14 @@ class BooksDaoTest {
         Library library = new Library("Main Library");
         library.setId(1L);
         Books book = new Books("Title 1", "Author 1", library);
-        long generatedId = 1L;
+        Long generatedId = 1L;
 
         // Мокаем ConnectionManager.getConnection()
         try (MockedStatic<ConnectionManager> connectionManagerMock = mockStatic(ConnectionManager.class)) {
             connectionManagerMock.when(ConnectionManager::getConnection).thenReturn(mockConnection);
-            when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
-            when(mockStatement.executeQuery()).thenReturn(mockResultSet);
+            when(mockConnection.prepareStatement(anyString(), eq(PreparedStatement.RETURN_GENERATED_KEYS))).thenReturn(mockStatement);
+            when(mockStatement.executeUpdate()).thenReturn(1);
+            when(mockStatement.getGeneratedKeys()).thenReturn(mockResultSet);
             when(mockResultSet.next()).thenReturn(true);
             when(mockResultSet.getLong("id")).thenReturn(generatedId);
 
@@ -251,11 +252,12 @@ class BooksDaoTest {
             assertEquals(library, book.getLibrary());
 
             // Проверяем, что все методы были вызваны ожидаемым образом
-            verify(mockConnection).prepareStatement(anyString());
+            verify(mockConnection).prepareStatement(anyString(), eq(PreparedStatement.RETURN_GENERATED_KEYS));
             verify(mockStatement).setString(1, book.getTitle());
             verify(mockStatement).setString(2, book.getAuthor());
             verify(mockStatement).setLong(3, library.getId());
-            verify(mockStatement).executeQuery();
+            verify(mockStatement).executeUpdate();
+            verify(mockStatement).getGeneratedKeys();
         }
     }
 
@@ -269,7 +271,7 @@ class BooksDaoTest {
         // Мокаем ConnectionManager.getConnection()
         try (MockedStatic<ConnectionManager> connectionManagerMock = mockStatic(ConnectionManager.class)) {
             connectionManagerMock.when(ConnectionManager::getConnection).thenReturn(mockConnection);
-            when(mockConnection.prepareStatement(anyString())).thenThrow(new SQLException("Database error"));
+            when(mockConnection.prepareStatement(anyString(), eq(PreparedStatement.RETURN_GENERATED_KEYS))).thenThrow(new SQLException("Database error"));
 
             // Проверяем, что DaoException взрывается
             DaoException daoException = assertThrows(DaoException.class, () -> booksDao.save(book));
@@ -278,7 +280,7 @@ class BooksDaoTest {
             assertEquals("Database error", daoException.getCause().getMessage());
 
             // Проверяем, что prepareStatement был вызван
-            verify(mockConnection).prepareStatement(anyString());
+            verify(mockConnection).prepareStatement(anyString(), eq(PreparedStatement.RETURN_GENERATED_KEYS));
         }
     }
 
