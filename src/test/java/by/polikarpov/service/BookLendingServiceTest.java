@@ -62,10 +62,10 @@ class BookLendingServiceTest {
 
         // Проверка результата
         assertEquals(2, result.size());
-        assertEquals("Reader One", result.get(0).readers().getReadersName());
-        assertEquals("Title 1", result.get(0).books().getTitle());
-        assertEquals("Reader Two", result.get(1).readers().getReadersName());
-        assertEquals("Title 2", result.get(1).books().getTitle());
+        assertEquals("Reader One", result.get(0).readers().readerName());
+        assertEquals("Title 1", result.get(0).books().title());
+        assertEquals("Reader Two", result.get(1).readers().readerName());
+        assertEquals("Title 2", result.get(1).books().title());
 
         verify(bookLendingDaoMock).findAll();
     }
@@ -105,6 +105,28 @@ class BookLendingServiceTest {
     }
 
     @Test
+    void getByNotReaderId() {
+        // Подготовка данных
+        Library library = new Library("Library");
+        Books book1 = new Books("Title 1", "Author", library);
+        book1.setId(1L);
+        Books book2 = new Books("Title 2", "Author", library);
+        book2.setId(1L);
+
+        when(bookLendingDaoMock.findByNotReaderId(1L)).thenReturn(Arrays.asList(book1, book2));
+
+        // Вызов метода
+        List<BooksDto> result = bookLendingService.getByNotReaderId(1L);
+
+        // Проверка результата
+        assertEquals(2, result.size());
+        assertEquals("Title 1", result.get(0).title());
+        assertEquals("Title 2", result.get(1).title());
+
+        verify(bookLendingDaoMock).findByNotReaderId(1L);
+    }
+
+    @Test
     void getByBookIdWhenExists() {
         // Подготовка данных
         Readers reader1 = new Readers("Reader 1");
@@ -141,11 +163,15 @@ class BookLendingServiceTest {
     void addReader() {
         // Подготовка данных
         Library library = new Library("Library");
-        Readers reader = new Readers("New Reader");
-        Books book = new Books("New Title", "author", library);
+        ReadersDto reader = new ReadersDto(null, "New Reader");
+        BooksDto book = new BooksDto(null, "New Title", "author", library);
+
+
+        Readers reader1 = new Readers( "New Reader");
+        Books book1 = new Books( "New Title", "author", library);
 
         BookLendingDto bookLendingDto = new BookLendingDto(reader, book);
-        BookLending bookLending = new BookLending(reader, book);
+        BookLending bookLending = new BookLending(reader1, book1);
 
         when(bookLendingDaoMock.save(bookLending)).thenReturn(bookLending);
 

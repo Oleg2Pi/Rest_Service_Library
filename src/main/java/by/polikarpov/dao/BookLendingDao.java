@@ -98,6 +98,36 @@ public class BookLendingDao implements Dao<Long, BookLending> {
         }
     }
 
+    private static final String FIND_BY_NOT_READER_ID_SQL = """
+            SELECT id
+            FROM books
+            WHERE id NOT IN (
+                SELECT book_id
+                FROM book_lending
+                WHERE reader_id = ?
+            );
+            """;
+
+    public List<Books> findByNotReaderId(Long id) {
+        BooksDao booksDao = BooksDao.getInstance();
+        try (var connection = ConnectionManager.getConnection();
+             var statement = connection.prepareStatement(FIND_BY_NOT_READER_ID_SQL)) {
+            statement.setLong(1, id);
+            var result = statement.executeQuery();
+            List<Books> books = new ArrayList<>();
+            while (result.next()) {
+                Optional<Books> optional = booksDao.findById(result.getLong("id"));
+                if (optional.isEmpty()) {
+                    throw new SQLException("Not found book");
+                }
+                books.add(optional.get());
+            }
+            return books;
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+    }
+
     private static final String FIND_BY_BOOK_ID_SQL = """
             SELECT reader_id
             FROM book_lending

@@ -5,10 +5,23 @@
 <html>
 <head>
   <title>Books</title>
+  <style>
+    table {
+      border-collapse: collapse; /* Убирает двойные границы */
+      width: 100%; /* Ширина таблицы */
+    }
+    th, td {
+      border: 2px solid black; /* Толщина и цвет линий */
+      padding: 10px; /* Отступы внутри ячеек */
+      text-align: left; /* Выравнивание текста */
+    }
+    th {
+      background-color: #f2f2f2; /* Цвет фона заголовков */
+    }
+  </style>
 </head>
 <body>
 <h1>Books List</h1>
-
 <table>
   <tr>
     <th>Name</th>
@@ -23,7 +36,7 @@
     </tr>
   </c:forEach>
 </table>
-
+<br>
 <table>
   <tr>
     <th>Other Library's objects</th>

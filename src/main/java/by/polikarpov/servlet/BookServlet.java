@@ -2,7 +2,9 @@ package by.polikarpov.servlet;
 
 import by.polikarpov.dto.BooksDto;
 import by.polikarpov.dto.LibraryDto;
+import by.polikarpov.dto.ReadersDto;
 import by.polikarpov.entity.Library;
+import by.polikarpov.service.BookLendingService;
 import by.polikarpov.service.BooksService;
 import by.polikarpov.service.LibraryService;
 import jakarta.servlet.ServletException;
@@ -25,9 +27,11 @@ public class BookServlet extends HttpServlet {
         String idParam = req.getParameter("id");
         if (idParam != null) {
             Long id = Long.parseLong(idParam);
+            List<ReadersDto> readers = BookLendingService.getInstance().getByBookId(id);
             booksService.getById(id).ifPresentOrElse(
                     book -> {
                         req.setAttribute("book", book);
+                        req.setAttribute("readers", readers);
                         try {
                             req.getRequestDispatcher("/WEB-INF/jsp/bookDetail.jsp").forward(req, resp);
                         } catch (ServletException | IOException e) {

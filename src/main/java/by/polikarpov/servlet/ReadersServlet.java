@@ -1,6 +1,10 @@
 package by.polikarpov.servlet;
 
+import by.polikarpov.dto.BookLendingDto;
+import by.polikarpov.dto.BooksDto;
 import by.polikarpov.dto.ReadersDto;
+import by.polikarpov.service.BookLendingService;
+import by.polikarpov.service.BooksService;
 import by.polikarpov.service.ReadersService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -21,9 +25,14 @@ public class ReadersServlet extends HttpServlet {
         String idParam = req.getParameter("id");
         if (idParam != null) {
             Long id = Long.parseLong(idParam);
+            BookLendingService bookLendingService = BookLendingService.getInstance();
+            List<BooksDto> books = bookLendingService.getByReaderId(id);
+            List<BooksDto> booksNot = bookLendingService.getByNotReaderId(id);
             readersService.getById(id).ifPresentOrElse(
                     reader -> {
                         req.setAttribute("reader", reader);
+                        req.setAttribute("books", books);
+                        req.setAttribute("booksNot", booksNot);
                         try {
                             req.getRequestDispatcher("/WEB-INF/jsp/readerDetail.jsp").forward(req, resp);
                         } catch (ServletException | IOException e) {
@@ -49,6 +58,7 @@ public class ReadersServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String idParam = req.getParameter("id");
         String readerName = req.getParameter("readerName");
+        String bookIdSave = req.getParameter("bookIdSave");
 
         if (idParam != null && !idParam.isEmpty() && readerName != null && !readerName.isEmpty()) {
             doPut(req, resp);
@@ -57,6 +67,14 @@ public class ReadersServlet extends HttpServlet {
             readersService.add(readerDto);
 
             resp.sendRedirect(req.getContextPath() + "/readers");
+        } else if (bookIdSave != null && !bookIdSave.isEmpty()) {
+            BookLendingService.getInstance().add(
+                    new BookLendingDto(
+                            readersService.getById(Long.valueOf(idParam)).get(),
+                            BooksService.getInstance().getById(Long.valueOf(bookIdSave)).get()
+                    )
+            );
+            resp.sendRedirect(req.getContextPath() + "/readers?id=" + idParam);
         } else if (idParam != null && !idParam.isEmpty()) {
             doDelete(req, resp);
         } else {
@@ -78,7 +96,13 @@ public class ReadersServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Long id = Long.valueOf(req.getParameter("id"));
-        readersService.delete(id);
-        resp.sendRedirect(req.getContextPath() + "/readers");
+        String bookId = req.getParameter("bookId");
+        if (bookId != null && !bookId.isEmpty()) {
+            BookLendingService.getInstance().delete(id, Long.valueOf(bookId));
+            resp.sendRedirect(req.getContextPath() + "/readers?id=" + id);
+        } else {
+            readersService.delete(id);
+            resp.sendRedirect(req.getContextPath() + "/readers");
+        }
     }
 }

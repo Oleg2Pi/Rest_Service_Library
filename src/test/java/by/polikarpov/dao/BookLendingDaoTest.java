@@ -154,6 +154,47 @@ class BookLendingDaoTest {
     }
 
     @Test
+    void testFindByNotReaderId() {
+        Library library = new Library("Main Library");
+        library.setId(1L);
+        Readers reader = new Readers("Reader 1");
+        reader.setId(1L);
+        Books book1 = new Books("Title 1", "Author 1", library);
+        book1.setId(1L);
+        Books book2 = new Books("Title 2", "Author 2", library);
+        book2.setId(2L);
+
+        try (MockedStatic<ConnectionManager> connectionManagerMock = mockStatic(ConnectionManager.class);
+             MockedStatic<BooksDao> booksDaoMock = mockStatic(BooksDao.class)) {
+            connectionManagerMock.when(ConnectionManager::getConnection).thenReturn(mockConnection);
+            when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
+            when(mockStatement.executeQuery()).thenReturn(mockResultSet);
+            when(mockResultSet.next()).thenReturn(true, true, false);
+            when(mockResultSet.getLong("book_id")).thenReturn(1L, 2L);
+
+            BooksDao mockBooksDao = mock(BooksDao.class);
+            booksDaoMock.when(BooksDao::getInstance).thenReturn(mockBooksDao);
+            when(mockBooksDao.findById(book1.getId())).thenReturn(Optional.of(book1));
+            when(mockBooksDao.findById(book2.getId())).thenReturn(Optional.of(book2));
+
+            List<Books> books = bookLendingDao.findByNotReaderId(2L);
+
+            assertFalse(books.isEmpty());
+            assertEquals(book1.getId(), books.get(0).getId());
+            assertEquals(book1.getTitle(), books.get(0).getTitle());
+            assertEquals(book2.getId(), books.get(1).getId());
+            assertEquals(book2.getTitle(), books.get(1).getTitle());
+
+            verify(mockConnection).prepareStatement(anyString());
+            verify(mockStatement).setLong(1, 2L);
+            verify(mockStatement).executeQuery();
+
+        } catch (SQLException e) {
+            fail("SQLException occurred: " + e.getMessage());
+        }
+    }
+
+    @Test
     void testFindByReaderIdFails() throws SQLException {
         long readerId = 1L;
 
