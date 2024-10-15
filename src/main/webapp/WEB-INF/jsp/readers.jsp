@@ -42,7 +42,7 @@
 
 <table>
     <tr>
-        <th>Name</th>
+        <th>Other Library's objects</th>
         <th>Link</th>
     </tr>
     <tr>
