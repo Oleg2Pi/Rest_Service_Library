@@ -16,6 +16,6 @@
     </tr>
 </table>
 <br>
-<a href="http://localhost:8080/readers/">Back</a>
+<a href="http://localhost:8080/readers/">Back to Readers List</a>
 </body>
 </html>

@@ -90,6 +90,29 @@ class BooksServiceTest {
     }
 
     @Test
+    void getByLibraryId() {
+        // Подготовка данных
+        Library library = new Library("Library");
+        library.setId(1L);
+        Books book1 = new Books("Title 1", "Author", library);
+        book1.setId(1L);
+        Books book2 = new Books("Title 2", "Author", library);
+        book2.setId(2L);
+
+        when(booksDaoMock.findAllByLibraryId(1L)).thenReturn(Arrays.asList(book1, book2));
+
+        // Вызов метода
+        List<BooksDto> result = booksService.getAllByLibraryId(library.getId());
+
+        // Проверка результата
+        assertEquals(2, result.size());
+        assertEquals("Title 1", result.get(0).title());
+        assertEquals("Title 2", result.get(1).title());
+
+        verify(booksDaoMock).findAllByLibraryId(library.getId());
+    }
+
+    @Test
     void addBook() {
         // Подготовка данных
         Library library = new Library("Library");

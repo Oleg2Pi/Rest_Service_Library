@@ -12,10 +12,57 @@
 <table>
   <tr>
     <th>Books</th>
+    <th>Link</th>
     <th>Action</th>
   </tr>
+  <c:choose>
+    <c:when test="${not empty requestScope.books}">
+      <c:forEach var="book" items="${requestScope.books}">
+        <tr>
+          <td>
+            <h4>${book.title()}</h4>
+          </td>
+
+          <td>
+            <a href="${PageContext.request.contextPath}/books?id=${book.id()}">View</a>
+          </td>
+
+          <td>
+            <form action="books" method="post" style="display:inline;">
+              <input type="hidden" name="id" value="${book.id()}"/>
+              <!-- Optionally add hidden input for update -->
+              <input type="text" name="title" required placeholder="Title"/>
+              <input type="text" name="author" required placeholder="Author"/>
+              <input type="hidden" name="libraryId" value="${requestScope.library.id()}"/>
+              <input type="submit" value="Update"/>
+            </form>
+          </td>
+
+          <td>
+            <form action="books" method="post" style="display:inline;">
+              <input type="hidden" name="id" value="${book.id()}"/>
+              <input type="hidden" name="libraryId" value="${requestScope.library.id()}"/>
+               <input type="submit" value="Delete"/>
+            </form>
+          </td>
+        </tr>
+      </c:forEach>
+    </c:when>
+    <c:otherwise>
+      <h3>Not found books</h3>
+    </c:otherwise>
+  </c:choose>
 </table>
+
+<h2>Add New Book</h2>
+<form action="books" method="post">
+  <input type="text" name="title" required placeholder="Title"/>
+  <input type="text" name="author" required placeholder="Author"/>
+  <input type="hidden" name="libraryId" value="${requestScope.library.id()}"/>
+  <input type="submit" value="Add Book"/>
+</form>
+
 <br>
-<a href="http://localhost:8080/">Back</a>
+<a href="http://localhost:8080/libraries">Back to Library List</a>
 </body>
 </html>

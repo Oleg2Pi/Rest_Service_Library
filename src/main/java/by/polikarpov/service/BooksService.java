@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class BooksService implements Service<Long, BooksDto>{
+public class BooksService implements Service<Long, BooksDto> {
 
     private static final BooksService INSTANCE = new BooksService();
 
@@ -18,7 +18,9 @@ public class BooksService implements Service<Long, BooksDto>{
         return INSTANCE;
     }
 
-    private BooksService() { this.booksDao = BooksDao.getInstance(); }
+    private BooksService() {
+        this.booksDao = BooksDao.getInstance();
+    }
 
     public void setBooksDao(BooksDao booksDao) {
         this.booksDao = booksDao;
@@ -36,6 +38,12 @@ public class BooksService implements Service<Long, BooksDto>{
         return booksDao.findById(id).map(
                 book -> new BooksDto(book.getId(), book.getTitle(), book.getAuthor(), book.getLibrary())
         );
+    }
+
+    public List<BooksDto> getAllByLibraryId(Long id) {
+        return booksDao.findAllByLibraryId(id).stream()
+                .map(book -> new BooksDto(book.getId(), book.getTitle(), book.getAuthor(), book.getLibrary()))
+                .collect(Collectors.toList());
     }
 
     @Override

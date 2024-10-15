@@ -1,6 +1,8 @@
 package by.polikarpov.servlet;
 
+import by.polikarpov.dto.BooksDto;
 import by.polikarpov.dto.LibraryDto;
+import by.polikarpov.service.BooksService;
 import by.polikarpov.service.LibraryService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -11,7 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/")
+@WebServlet("/libraries")
 public class LibraryServlet extends HttpServlet {
 
     private static final LibraryService libraryService = LibraryService.getInstance();
@@ -21,9 +23,11 @@ public class LibraryServlet extends HttpServlet {
         String idParam = req.getParameter("id");
         if  (idParam != null) {
             Long id = Long.parseLong(idParam);
+            List<BooksDto> books = BooksService.getInstance().getAllByLibraryId(id);
             libraryService.getById(id).ifPresentOrElse(
                     library -> {
                         req.setAttribute("library", library);
+                        req.setAttribute("books", books);
                         try {
                             req.getRequestDispatcher("/WEB-INF/jsp/libraryDetail.jsp").forward(req, resp);
                         } catch (ServletException e) {
@@ -58,7 +62,7 @@ public class LibraryServlet extends HttpServlet {
             LibraryDto libraryDto = new LibraryDto(null, libraryName);
             libraryService.add(libraryDto);
 
-            resp.sendRedirect(req.getContextPath() + "/");
+            resp.sendRedirect(req.getContextPath() + "/libraries");
         } else if (idParam != null && !idParam.isEmpty()) {
             doDelete(req, resp);
         } else{
@@ -73,7 +77,7 @@ public class LibraryServlet extends HttpServlet {
 
         var libraryDto = new LibraryDto(id, libraryName);
         libraryService.update(libraryDto);
-        resp.sendRedirect(req.getContextPath() + "/");
+        resp.sendRedirect(req.getContextPath() + "/libraries");
 
     }
 

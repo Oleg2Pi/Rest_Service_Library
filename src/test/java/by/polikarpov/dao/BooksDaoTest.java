@@ -210,6 +210,47 @@ class BooksDaoTest {
     }
 
     @Test
+    void testFindByLibraryId() {
+        Library library = new Library("Main Library");
+        library.setId(1L);
+        Books expectedBook1 = new Books("Title 1", "Author 1", library);
+        expectedBook1.setId(1L);
+        Books expectedBook2 = new Books("Title 2", "Author 2", library);
+        expectedBook2.setId(2L);
+
+        try (MockedStatic<ConnectionManager> connectionManagerMock = mockStatic(ConnectionManager.class);
+             MockedStatic<LibraryDao> libraryDaoMock = mockStatic(LibraryDao.class)) {
+            connectionManagerMock.when(ConnectionManager::getConnection).thenReturn(mockConnection);
+            when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
+            when(mockStatement.executeQuery()).thenReturn(mockResultSet);
+            when(mockResultSet.next()).thenReturn(true, true, false);
+            when(mockResultSet.getLong("id")).thenReturn(1L, 2L);
+            when(mockResultSet.getString("title")).thenReturn("Title 1", "Title 2");
+            when(mockResultSet.getString("author")).thenReturn("Author 1", "Author 2");
+            when(mockResultSet.getLong("library_id")).thenReturn(1L, 1L);
+
+            LibraryDao mockLibraryDao = mock(LibraryDao.class);
+            libraryDaoMock.when(LibraryDao::getInstance).thenReturn(mockLibraryDao);
+            when(mockLibraryDao.findById(library.getId())).thenReturn(Optional.of(library));
+
+            List<Books> book = booksDao.findAllByLibraryId(library.getId());
+
+            assertEquals(2, book.size());
+            assertEquals(expectedBook1.getId(), book.get(0).getId());
+            assertEquals(expectedBook1.getTitle(), book.get(0).getTitle());
+            assertEquals(expectedBook2.getId(), book.get(1).getId());
+            assertEquals(expectedBook2.getTitle(), book.get(1).getTitle());
+
+            verify(mockConnection).prepareStatement(anyString());
+            verify(mockStatement).setLong(1, library.getId());
+            verify(mockStatement).executeQuery();
+
+        } catch (SQLException e) {
+            fail("SQLException occurred: " + e.getMessage());
+        }
+    }
+
+    @Test
     void testFindByIdFails() throws SQLException {
         long bookId = 1L;
 

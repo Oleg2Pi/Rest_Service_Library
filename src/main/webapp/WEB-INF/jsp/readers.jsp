@@ -47,7 +47,7 @@
     </tr>
     <tr>
         <td>All Libraries</td>
-        <td><a href="${PageContext.request.contextPath}/">View</a></td>
+        <td><a href="${PageContext.request.contextPath}/libraries">View</a></td>
     </tr>
     <tr>
         <td>All Books</td>

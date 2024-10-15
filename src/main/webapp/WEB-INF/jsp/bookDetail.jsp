@@ -20,7 +20,7 @@
             ${requestScope.book.author()}
         </td>
         <td>
-            <a href="${PageContext.request.contextPath}/libraries?=${requestScope.book.library().getId()}">
+            <a href="${PageContext.request.contextPath}/libraries?id=${requestScope.book.library().getId()}">
                 ${requestScope.book.library().getLibraryName()}
             </a>
         </td>
@@ -30,6 +30,6 @@
     </tr>
 </table>
 <br>
-<a href="http://localhost:8080/books">Back</a>
+<a href="http://localhost:8080/books">Back to Books List</a>
 </body>
 </html>

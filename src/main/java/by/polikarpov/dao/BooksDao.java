@@ -74,7 +74,7 @@ public class BooksDao implements Dao<Long, Books> {
         var libraryDB = libraryDao.findById(result.getLong("library_id"));
         if (libraryDB.isPresent()) {
             library = libraryDB.get();
-             book = new Books(
+            book = new Books(
                     result.getString("title"),
                     result.getString("author"),
                     library
@@ -103,6 +103,27 @@ public class BooksDao implements Dao<Long, Books> {
                 book = Optional.of(builderBook(result));
             }
             return book;
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+    }
+
+    private static final String FIND_ALL_BY_LIBRARY_ID_SQL = """
+            SELECT id, title, author, library_id
+            FROM books
+            WHERE library_id = ?
+            """;
+
+    public List<Books> findAllByLibraryId(Long libraryId) {
+        try (var connection = ConnectionManager.getConnection();
+             var statement = connection.prepareStatement(FIND_ALL_BY_LIBRARY_ID_SQL)) {
+            statement.setLong(1, libraryId);
+            List<Books> books = new ArrayList<>();
+            var result = statement.executeQuery();
+            while (result.next()) {
+                books.add(builderBook(result));
+            }
+            return books;
         } catch (SQLException e) {
             throw new DaoException(e);
         }

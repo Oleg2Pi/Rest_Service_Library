@@ -65,7 +65,7 @@ public class BookServlet extends HttpServlet {
             BooksDto bookDto = new BooksDto(null, title, author, getLibrary(libraryId, resp));
             booksService.add(bookDto);
 
-            resp.sendRedirect(req.getContextPath() + "/books");
+            resp.sendRedirect(req.getContextPath() + "/libraries?id=" + libraryId);
         } else if (idParam != null && !idParam.isEmpty()) {
             doDelete(req, resp);
         } else {
@@ -82,7 +82,7 @@ public class BookServlet extends HttpServlet {
 
         var bookDto = new BooksDto(id, title, author, getLibrary(libraryId, resp));
         booksService.update(bookDto);
-        resp.sendRedirect(req.getContextPath() + "/books");
+        resp.sendRedirect(req.getContextPath() + "/libraries?id=" + libraryId);
 
     }
 
@@ -90,7 +90,7 @@ public class BookServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Long id = Long.valueOf(req.getParameter("id"));
         booksService.delete(id);
-        resp.sendRedirect(req.getContextPath() + "/books");
+        resp.sendRedirect(req.getContextPath() + "/libraries?id=" + req.getParameter("libraryId"));
     }
 
     private Library getLibrary(String libraryId, HttpServletResponse resp) throws IOException {
