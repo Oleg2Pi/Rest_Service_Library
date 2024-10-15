@@ -18,10 +18,18 @@ import java.util.List;
 @WebServlet("/readers")
 public class ReadersServlet extends HttpServlet {
 
-    private static final ReadersService readersService = ReadersService.getInstance();
+    private ReadersService readersService;
+
+    public ReadersServlet() {
+        this.readersService = ReadersService.getInstance();
+    }
+
+    public void setReadersService(ReadersService readersService) {
+        this.readersService = readersService;
+    }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String idParam = req.getParameter("id");
         if (idParam != null) {
             Long id = Long.parseLong(idParam);
@@ -55,7 +63,7 @@ public class ReadersServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String idParam = req.getParameter("id");
         String readerName = req.getParameter("readerName");
         String bookIdSave = req.getParameter("bookIdSave");
@@ -78,31 +86,39 @@ public class ReadersServlet extends HttpServlet {
         } else if (idParam != null && !idParam.isEmpty()) {
             doDelete(req, resp);
         } else {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Reader's name cannot be empty");
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Reader's name cannot be empty");
         }
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Long id = Long.valueOf(req.getParameter("id"));
-        String readerName = req.getParameter("readerName");
+    public void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if (req.getParameter("id") == null || req.getParameter("id").isEmpty()
+            || req.getParameter("readerName") == null || req.getParameter("readerName").isEmpty()) {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Reader not exists");
+        } else {
+            Long id = Long.valueOf(req.getParameter("id"));
+            String readerName = req.getParameter("readerName");
 
-        var readerDto = new ReadersDto(id, readerName);
-        readersService.update(readerDto);
-        resp.sendRedirect(req.getContextPath() + "/readers");
-
+            var readerDto = new ReadersDto(id, readerName);
+            readersService.update(readerDto);
+            resp.sendRedirect(req.getContextPath() + "/readers");
+        }
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Long id = Long.valueOf(req.getParameter("id"));
-        String bookId = req.getParameter("bookId");
-        if (bookId != null && !bookId.isEmpty()) {
-            BookLendingService.getInstance().delete(id, Long.valueOf(bookId));
-            resp.sendRedirect(req.getContextPath() + "/readers?id=" + id);
+    public void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if (req.getParameter("id") == null || req.getParameter("id").isEmpty()) {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Reader not exists");
         } else {
-            readersService.delete(id);
-            resp.sendRedirect(req.getContextPath() + "/readers");
+            Long id = Long.valueOf(req.getParameter("id"));
+            String bookId = req.getParameter("bookId");
+            if (bookId != null && !bookId.isEmpty()) {
+                BookLendingService.getInstance().delete(id, Long.valueOf(bookId));
+                resp.sendRedirect(req.getContextPath() + "/readers?id=" + id);
+            } else {
+                readersService.delete(id);
+                resp.sendRedirect(req.getContextPath() + "/readers");
+            }
         }
     }
 }

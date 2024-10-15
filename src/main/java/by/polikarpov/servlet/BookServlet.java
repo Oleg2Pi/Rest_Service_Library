@@ -20,12 +20,20 @@ import java.util.Optional;
 @WebServlet("/books")
 public class BookServlet extends HttpServlet {
 
-    private static final BooksService booksService = BooksService.getInstance();
+    private BooksService booksService;
+
+    public BookServlet() {
+        booksService = BooksService.getInstance();
+    }
+
+    public void setBooksService(BooksService booksService) {
+        this.booksService = booksService;
+    }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String idParam = req.getParameter("id");
-        if (idParam != null) {
+        if (idParam != null && !idParam.isEmpty()) {
             Long id = Long.parseLong(idParam);
             List<ReadersDto> readers = BookLendingService.getInstance().getByBookId(id);
             booksService.getById(id).ifPresentOrElse(
@@ -54,7 +62,7 @@ public class BookServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String idParam = req.getParameter("id");
         String title = req.getParameter("title");
         String author = req.getParameter("author");
@@ -70,31 +78,42 @@ public class BookServlet extends HttpServlet {
             booksService.add(bookDto);
 
             resp.sendRedirect(req.getContextPath() + "/libraries?id=" + libraryId);
-        } else if (idParam != null && !idParam.isEmpty()) {
+        } else if (idParam != null && !idParam.isEmpty() && libraryId != null && !libraryId.isEmpty()) {
             doDelete(req, resp);
         } else {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Book's data cannot be empty");
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Book's data cannot be empty");
         }
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Long id = Long.valueOf(req.getParameter("id"));
-        String title = req.getParameter("title");
-        String author = req.getParameter("author");
-        String libraryId = req.getParameter("libraryId");
+    public void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if (req.getParameter("id") == null || req.getParameter("id").isEmpty()
+            || req.getParameter("title") == null || req.getParameter("title").isEmpty()
+            || req.getParameter("author") == null || req.getParameter("author").isEmpty()
+            || req.getParameter("libraryId") == null || req.getParameter("libraryId").isEmpty()) {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Book's data not correct");
+        } else {
+            Long id = Long.valueOf(req.getParameter("id"));
+            String title = req.getParameter("title");
+            String author = req.getParameter("author");
+            String libraryId = req.getParameter("libraryId");
 
-        var bookDto = new BooksDto(id, title, author, getLibrary(libraryId, resp));
-        booksService.update(bookDto);
-        resp.sendRedirect(req.getContextPath() + "/libraries?id=" + libraryId);
-
+            var bookDto = new BooksDto(id, title, author, getLibrary(libraryId, resp));
+            booksService.update(bookDto);
+            resp.sendRedirect(req.getContextPath() + "/libraries?id=" + libraryId);
+        }
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Long id = Long.valueOf(req.getParameter("id"));
-        booksService.delete(id);
-        resp.sendRedirect(req.getContextPath() + "/libraries?id=" + req.getParameter("libraryId"));
+    public void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if (req.getParameter("id") == null || req.getParameter("id").isEmpty() ||
+            req.getParameter("libraryId") == null || req.getParameter("libraryId").isEmpty()) {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Not exists book");
+        } else {
+            Long id = Long.valueOf(req.getParameter("id"));
+            booksService.delete(id);
+            resp.sendRedirect(req.getContextPath() + "/libraries?id=" + req.getParameter("libraryId"));
+        }
     }
 
     private Library getLibrary(String libraryId, HttpServletResponse resp) throws IOException {
