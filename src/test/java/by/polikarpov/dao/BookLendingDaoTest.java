@@ -170,7 +170,7 @@ class BookLendingDaoTest {
             when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
             when(mockStatement.executeQuery()).thenReturn(mockResultSet);
             when(mockResultSet.next()).thenReturn(true, true, false);
-            when(mockResultSet.getLong("book_id")).thenReturn(1L, 2L);
+            when(mockResultSet.getLong("id")).thenReturn(1L, 2L);
 
             BooksDao mockBooksDao = mock(BooksDao.class);
             booksDaoMock.when(BooksDao::getInstance).thenReturn(mockBooksDao);
