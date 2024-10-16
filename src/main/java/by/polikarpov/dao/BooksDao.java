@@ -12,6 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Data Access Object (DAO) class for managing book entities in the database.
+ * This class provides methods for performing CRUD operations (Create, Read, Update, Delete)
+ * and specific queries related to books.
+ */
 public class BooksDao implements Dao<Long, Books> {
 
     private static final BooksDao INSTANCE = new BooksDao();
@@ -19,6 +24,11 @@ public class BooksDao implements Dao<Long, Books> {
     private BooksDao() {
     }
 
+    /**
+     * Returns a singleton instance of the BooksDao class.
+     *
+     * @return an instance of BooksDao
+     */
     public static BooksDao getInstance() {
         return INSTANCE;
     }
@@ -31,6 +41,13 @@ public class BooksDao implements Dao<Long, Books> {
             WHERE id = ?
             """;
 
+    /**
+     * Updates an existing book record in the database.
+     *
+     * @param entity the Books object containing updated fields
+     * @return true if the update was successful; false otherwise
+     * @throws DaoException if there is a data access error
+     */
     @Override
     public boolean update(Books entity) {
         try (var connection = ConnectionManager.getConnection();
@@ -52,6 +69,12 @@ public class BooksDao implements Dao<Long, Books> {
             ORDER BY id
             """;
 
+    /**
+     * Retrieves all book records from the database.
+     *
+     * @return a list of Books objects
+     * @throws DaoException if there is a data access error
+     */
     @Override
     public List<Books> findAll() {
         try (var connection = ConnectionManager.getConnection();
@@ -67,6 +90,13 @@ public class BooksDao implements Dao<Long, Books> {
         }
     }
 
+    /**
+     * Builds a Books object from the result set.
+     *
+     * @param result the result set containing book data
+     * @return a Books object
+     * @throws SQLException if the library associated with the book cannot be found
+     */
     private Books builderBook(ResultSet result) throws SQLException {
         LibraryDao libraryDao = LibraryDao.getInstance();
         Library library;
@@ -92,6 +122,13 @@ public class BooksDao implements Dao<Long, Books> {
             WHERE id = ?
             """;
 
+    /**
+     * Finds a book by its ID.
+     *
+     * @param id the book's ID
+     * @return an Optional containing the found Books object or empty if not found
+     * @throws DaoException if there is a data access error
+     */
     @Override
     public Optional<Books> findById(Long id) {
         try (var connection = ConnectionManager.getConnection();
@@ -114,6 +151,13 @@ public class BooksDao implements Dao<Long, Books> {
             WHERE library_id = ?
             """;
 
+    /**
+     * Finds all books in a specific library by its ID.
+     *
+     * @param libraryId the library's ID
+     * @return a list of Books objects belonging to the specified library
+     * @throws DaoException if there is a data access error
+     */
     public List<Books> findAllByLibraryId(Long libraryId) {
         try (var connection = ConnectionManager.getConnection();
              var statement = connection.prepareStatement(FIND_ALL_BY_LIBRARY_ID_SQL)) {
@@ -134,6 +178,13 @@ public class BooksDao implements Dao<Long, Books> {
             VALUES (?, ?, ?)
             """;
 
+    /**
+     * Saves a new book record in the database.
+     *
+     * @param entity the Books object to be saved
+     * @return the saved Books object with the generated ID
+     * @throws DaoException if there is a data access error
+     */
     @Override
     public Books save(Books entity) {
         try (var connection = ConnectionManager.getConnection();
@@ -158,6 +209,13 @@ public class BooksDao implements Dao<Long, Books> {
             WHERE id = ?
             """;
 
+    /**
+     * Deletes a book record from the database by its ID.
+     *
+     * @param id the book's ID
+     * @return true if the deletion was successful; false otherwise
+     * @throws DaoException if there is a data access error
+     */
     @Override
     public boolean delete(Long id) {
         try (var connection = ConnectionManager.getConnection();
@@ -171,6 +229,7 @@ public class BooksDao implements Dao<Long, Books> {
 
     @Override
     public boolean delete(Long readerId, Long bookId) {
+        // Method not implemented
         return false;
     }
 }
