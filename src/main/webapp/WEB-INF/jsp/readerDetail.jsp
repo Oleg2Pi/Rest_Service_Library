@@ -69,6 +69,6 @@
     </c:otherwise>
 </c:choose>
 <br>
-<a href="http://localhost:8080/readers">Back to Readers List</a>
+<a href="${PageContext.request.contextPath}/readers">Back to Readers List</a>
 </body>
 </html>

@@ -54,6 +54,6 @@
     </tr>
 </table>
 <br>
-<a href="http://localhost:8080/books">Back to Books List</a>
+<a href="${PageContext.request.contextPath}/books">Back to Books List</a>
 </body>
 </html>

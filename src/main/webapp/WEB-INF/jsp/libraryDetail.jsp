@@ -77,6 +77,6 @@
 </form>
 
 <br>
-<a href="http://localhost:8080/libraries">Back to Library List</a>
+<a href="${PageContext.request.contextPath}/libraries">Back to Library List</a>
 </body>
 </html>
