@@ -17,19 +17,39 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Servlet for handling book-related operations, including retrieving,
+ * adding, updating, and deleting books in a library system.
+ */
 @WebServlet("/books")
 public class BookServlet extends HttpServlet {
 
     private BooksService booksService;
 
+    /**
+     * Initializes the servlet and retrieves the BooksService instance.
+     */
     public BookServlet() {
         booksService = BooksService.getInstance();
     }
 
+    /**
+     * Sets the BooksService instance to be used by this servlet.
+     *
+     * @param booksService the BooksService instance to set
+     */
     public void setBooksService(BooksService booksService) {
         this.booksService = booksService;
     }
 
+    /**
+     * Handles GET requests to retrieve book details or a list of books.
+     *
+     * @param req the HttpServletRequest object
+     * @param resp the HttpServletResponse object
+     * @throws ServletException if an error occurs during request processing
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String idParam = req.getParameter("id");
@@ -61,6 +81,14 @@ public class BookServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Handles POST requests for adding new books or for updating/deleting existing books.
+     *
+     * @param req the HttpServletRequest object
+     * @param resp the HttpServletResponse object
+     * @throws ServletException if an error occurs during request processing
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String idParam = req.getParameter("id");
@@ -85,6 +113,14 @@ public class BookServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Handles PUT requests for updating existing books.
+     *
+     * @param req the HttpServletRequest object
+     * @param resp the HttpServletResponse object
+     * @throws ServletException if an error occurs during request processing
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (req.getParameter("id") == null || req.getParameter("id").isEmpty()
@@ -104,6 +140,14 @@ public class BookServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Handles DELETE requests for removing a book by its ID.
+     *
+     * @param req the HttpServletRequest object
+     * @param resp the HttpServletResponse object
+     * @throws ServletException if an error occurs during request processing
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (req.getParameter("id") == null || req.getParameter("id").isEmpty() ||
@@ -116,6 +160,14 @@ public class BookServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Retrieves a Library object based on the provided library ID.
+     *
+     * @param libraryId the ID of the library to retrieve
+     * @param resp the HttpServletResponse object for sending errors
+     * @return a Library object representing the library
+     * @throws IOException if the library is not found
+     */
     private Library getLibrary(String libraryId, HttpServletResponse resp) throws IOException {
         Optional<LibraryDto> optional = LibraryService.getInstance().getById(Long.valueOf(libraryId));
         if (optional.isEmpty()) {
