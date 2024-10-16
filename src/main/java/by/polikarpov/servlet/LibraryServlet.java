@@ -13,19 +13,39 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Servlet for handling library-related operations including retrieving,
+ * adding, updating, and deleting libraries.
+ */
 @WebServlet("/libraries")
 public class LibraryServlet extends HttpServlet {
 
     private LibraryService libraryService;
 
+    /**
+     * Initializes the servlet and retrieves the LibraryService instance.
+     */
     public LibraryServlet() {
         this.libraryService = LibraryService.getInstance();
     }
 
+    /**
+     * Sets the LibraryService instance to be used by this servlet.
+     *
+     * @param libraryService the LibraryService instance to set
+     */
     public void setLibraryService(LibraryService libraryService) {
         this.libraryService = libraryService;
     }
 
+    /**
+     * Handles GET requests to retrieve library details or list all libraries.
+     *
+     * @param req the HttpServletRequest object
+     * @param resp the HttpServletResponse object
+     * @throws ServletException if an error occurs during request processing
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String idParam = req.getParameter("id");
@@ -59,6 +79,14 @@ public class LibraryServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Handles POST requests for adding new libraries or updating/deleting existing libraries.
+     *
+     * @param req the HttpServletRequest object
+     * @param resp the HttpServletResponse object
+     * @throws ServletException if an error occurs during request processing
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String idParam = req.getParameter("id");
@@ -78,6 +106,14 @@ public class LibraryServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Handles PUT requests for updating existing libraries.
+     *
+     * @param req the HttpServletRequest object
+     * @param resp the HttpServletResponse object
+     * @throws ServletException if an error occurs during request processing
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (req.getParameter("id") == null || req.getParameter("id").isEmpty()
@@ -93,6 +129,14 @@ public class LibraryServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Handles DELETE requests for removing a library by its ID.
+     *
+     * @param req the HttpServletRequest object
+     * @param resp the HttpServletResponse object
+     * @throws ServletException if an error occurs during request processing
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (req.getParameter("id") == null || req.getParameter("id").isEmpty()) {
