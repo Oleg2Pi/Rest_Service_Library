@@ -11,6 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Data Access Object (DAO) class for managing reader entities in the database.
+ * This class implements CRUD operations (Create, Read, Update, Delete)
+ * for reader records.
+ */
 public class ReadersDao implements Dao<Long, Readers> {
 
     private static final ReadersDao INSTANCE = new ReadersDao();
@@ -18,6 +23,11 @@ public class ReadersDao implements Dao<Long, Readers> {
     private ReadersDao() {
     }
 
+    /**
+     * Returns a singleton instance of the ReadersDao class.
+     *
+     * @return an instance of ReadersDao
+     */
     public static ReadersDao getInstance() {
         return INSTANCE;
     }
@@ -28,6 +38,13 @@ public class ReadersDao implements Dao<Long, Readers> {
             WHERE id = ?
             """;
 
+    /**
+     * Updates an existing reader record in the database.
+     *
+     * @param entity the Readers object containing updated fields
+     * @return true if the update was successful; false otherwise
+     * @throws DaoException if there is a data access error
+     */
     @Override
     public boolean update(Readers entity) {
         try (var connection = ConnectionManager.getConnection();
@@ -47,6 +64,12 @@ public class ReadersDao implements Dao<Long, Readers> {
             ORDER BY id
             """;
 
+    /**
+     * Retrieves all reader records from the database.
+     *
+     * @return a list of Readers objects
+     * @throws DaoException if there is a data access error
+     */
     @Override
     public List<Readers> findAll() {
         try (var connection = ConnectionManager.getConnection();
@@ -62,6 +85,13 @@ public class ReadersDao implements Dao<Long, Readers> {
         }
     }
 
+    /**
+     * Builds a Readers object from the result set.
+     *
+     * @param result the result set containing reader data
+     * @return a Readers object
+     * @throws SQLException if there is an error accessing the result set
+     */
     private Readers builderReaders(ResultSet result) throws SQLException {
         Readers readers = new Readers(
                 result.getString("readers_name")
@@ -76,6 +106,13 @@ public class ReadersDao implements Dao<Long, Readers> {
             WHERE id = ?
             """;
 
+    /**
+     * Finds a reader by its ID.
+     *
+     * @param id the reader's ID
+     * @return an Optional containing the found Readers object or empty if not found
+     * @throws DaoException if there is a data access error
+     */
     @Override
     public Optional<Readers> findById(Long id) {
         try (var connection = ConnectionManager.getConnection();
@@ -97,6 +134,13 @@ public class ReadersDao implements Dao<Long, Readers> {
             VALUES (?)
             """;
 
+    /**
+     * Saves a new reader record in the database.
+     *
+     * @param entity the Readers object to be saved
+     * @return the saved Readers object with the generated ID
+     * @throws DaoException if there is a data access error
+     */
     @Override
     public Readers save(Readers entity) {
         try (var connection = ConnectionManager.getConnection();
@@ -119,6 +163,13 @@ public class ReadersDao implements Dao<Long, Readers> {
             WHERE id = ?
             """;
 
+    /**
+     * Deletes a reader record from the database by its ID.
+     *
+     * @param id the reader's ID
+     * @return true if the deletion was successful; false otherwise
+     * @throws DaoException if there is a data access error
+     */
     @Override
     public boolean delete(Long id) {
         try (var connection = ConnectionManager.getConnection();
@@ -132,6 +183,7 @@ public class ReadersDao implements Dao<Long, Readers> {
 
     @Override
     public boolean delete(Long readerId, Long bookId) {
+        // Method not implemented
         return false;
     }
 }
