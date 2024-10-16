@@ -162,6 +162,7 @@ public class LibraryDao implements Dao<Long, Library> {
             DELETE FROM library
             WHERE id = ?
             """;
+
     /**
      * Deletes a library record from the database by its ID.
      *

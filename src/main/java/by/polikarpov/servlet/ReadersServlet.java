@@ -44,10 +44,10 @@ public class ReadersServlet extends HttpServlet {
     /**
      * Handles GET requests to retrieve reader details or list all readers.
      *
-     * @param req the HttpServletRequest object
+     * @param req  the HttpServletRequest object
      * @param resp the HttpServletResponse object
      * @throws ServletException if an error occurs during request processing
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -86,10 +86,10 @@ public class ReadersServlet extends HttpServlet {
     /**
      * Handles POST requests for adding new readers or updating/deleting existing readers.
      *
-     * @param req the HttpServletRequest object
+     * @param req  the HttpServletRequest object
      * @param resp the HttpServletResponse object
      * @throws ServletException if an error occurs during request processing
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -122,10 +122,10 @@ public class ReadersServlet extends HttpServlet {
     /**
      * Handles PUT requests for updating existing readers.
      *
-     * @param req the HttpServletRequest object
+     * @param req  the HttpServletRequest object
      * @param resp the HttpServletResponse object
      * @throws ServletException if an error occurs during request processing
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     public void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -145,10 +145,10 @@ public class ReadersServlet extends HttpServlet {
     /**
      * Handles DELETE requests for removing a reader by their ID or unassigning a book.
      *
-     * @param req the HttpServletRequest object
+     * @param req  the HttpServletRequest object
      * @param resp the HttpServletResponse object
      * @throws ServletException if an error occurs during request processing
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     public void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

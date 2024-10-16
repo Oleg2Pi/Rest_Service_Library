@@ -5,7 +5,7 @@ package by.polikarpov.exception;
  * This exception is a runtime exception, which means it does not need to be declared in a method's or constructor's
  * {@code throws} clause.
  */
-public class DaoException extends RuntimeException{
+public class DaoException extends RuntimeException {
 
     /**
      * Constructs a new DaoException with the specified cause.

@@ -5,7 +5,7 @@ package by.polikarpov.dto;
  * This record associates a reader with a book they are lending.
  *
  * @param readers the details of the readerDto involved in the lending
- * @param books the details of the bookDto being lent
+ * @param books   the details of the bookDto being lent
  */
 public record BookLendingDto(ReadersDto readers, BooksDto books) {
 }

@@ -31,7 +31,9 @@ public class BookLendingService implements Service<Long, BookLendingDto> {
         return INSTANCE;
     }
 
-    private BookLendingService() { this.bookLendingDao = BookLendingDao.getInstance(); }
+    private BookLendingService() {
+        this.bookLendingDao = BookLendingDao.getInstance();
+    }
 
     /**
      * Sets the BookLendingDao to be used by the service.

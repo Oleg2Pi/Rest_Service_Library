@@ -27,7 +27,9 @@ public class ReadersService implements Service<Long, ReadersDto> {
         return INSTANCE;
     }
 
-    private ReadersService() { this.readersDao = ReadersDao.getInstance();}
+    private ReadersService() {
+        this.readersDao = ReadersDao.getInstance();
+    }
 
     /**
      * Sets the ReadersDao to be used by the service.

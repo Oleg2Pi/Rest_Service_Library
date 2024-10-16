@@ -36,10 +36,13 @@ public class PropertiesUtil {
      * @param key the key whose associated value is to be returned
      * @return the value associated with the specified key, or null if the key does not exist
      */
-    public static String get(String key) { return PROPERTIES.getProperty(key); }
+    public static String get(String key) {
+        return PROPERTIES.getProperty(key);
+    }
 
     /**
      * Private constructor to prevent instantiation of this utility class.
      */
-    private PropertiesUtil() {}
+    private PropertiesUtil() {
+    }
 }

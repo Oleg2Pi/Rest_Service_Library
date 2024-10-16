@@ -55,7 +55,7 @@ public interface Dao<T, E> {
      * Deletes an entity associated with a specific reader and book for book lending.
      *
      * @param readerId the identifier of the reader
-     * @param bookId the identifier of the book
+     * @param bookId   the identifier of the book
      * @return true if the deletion was successful; false otherwise
      */
     boolean delete(T readerId, T bookId);
