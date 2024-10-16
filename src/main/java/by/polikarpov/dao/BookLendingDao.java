@@ -12,6 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Data Access Object (DAO) for managing information about book lendings
+ * between readers and books. Provides methods for performing CRUD operations
+ * (Create, Read, Update, Delete) and specific queries related to book lendings.
+ */
 public class BookLendingDao implements Dao<Long, BookLending> {
 
     private static final BookLendingDao INSTANCE = new BookLendingDao();
@@ -19,12 +24,14 @@ public class BookLendingDao implements Dao<Long, BookLending> {
     private BookLendingDao() {
     }
 
+
     public static BookLendingDao getInstance() {
         return INSTANCE;
     }
 
     @Override
     public boolean update(BookLending entity) {
+        // Implementation will be not defined
         return false;
     }
 
@@ -33,6 +40,12 @@ public class BookLendingDao implements Dao<Long, BookLending> {
             FROM book_lending
             """;
 
+    /**
+     * Finds and returns a list of all book lending records.
+     *
+     * @return a list of BookLending objects
+     * @throws DaoException if there is a data access error
+     */
     @Override
     public List<BookLending> findAll() {
         try (var connection = ConnectionManager.getConnection();
@@ -50,9 +63,17 @@ public class BookLendingDao implements Dao<Long, BookLending> {
 
     @Override
     public Optional<BookLending> findById(Long id) {
+        // Implementation will be not defined
         return Optional.empty();
     }
 
+    /**
+     * Builds a BookLending object from the result set.
+     *
+     * @param result the result set
+     * @return a BookLending object
+     * @throws SQLException if the reader or book cannot be found
+     */
     private BookLending builderBookLending(ResultSet result) throws SQLException {
         Optional<Readers> optionalReaders = ReadersDao.getInstance().findById(result.getLong("reader_id"));
         if (optionalReaders.isEmpty()) {
@@ -78,6 +99,13 @@ public class BookLendingDao implements Dao<Long, BookLending> {
             WHERE reader_id = ?
             """;
 
+    /**
+     * Finds all books lent to a specific reader by their ID.
+     *
+     * @param id the reader's ID
+     * @return a list of Books
+     * @throws DaoException if there is a data access error
+     */
     public List<Books> findByReaderId(Long id) {
         BooksDao booksDao = BooksDao.getInstance();
         try (var connection = ConnectionManager.getConnection();
@@ -108,6 +136,13 @@ public class BookLendingDao implements Dao<Long, BookLending> {
             );
             """;
 
+    /**
+     * Finds all books that have not been lent to a specific reader.
+     *
+     * @param id the reader's ID
+     * @return a list of Books
+     * @throws DaoException if there is a data access error
+     */
     public List<Books> findByNotReaderId(Long id) {
         BooksDao booksDao = BooksDao.getInstance();
         try (var connection = ConnectionManager.getConnection();
@@ -134,6 +169,13 @@ public class BookLendingDao implements Dao<Long, BookLending> {
             WHERE book_id = ?
             """;
 
+    /**
+     * Finds all readers who borrowed a specific book by its ID.
+     *
+     * @param id the book's ID
+     * @return a list of Readers
+     * @throws DaoException if there is a data access error
+     */
     public List<Readers> findByBookId(Long id) {
         ReadersDao readersDao = ReadersDao.getInstance();
         try (var connection = ConnectionManager.getConnection();
@@ -159,6 +201,13 @@ public class BookLendingDao implements Dao<Long, BookLending> {
             VALUES (?, ?)
             """;
 
+    /**
+     * Saves a book lending record for a reader in the database.
+     *
+     * @param entity the BookLending object to be saved
+     * @return the saved BookLending object
+     * @throws DaoException if there is a data access error
+     */
     public BookLending save(BookLending entity) {
         try (var connection = ConnectionManager.getConnection();
              var statement = connection.prepareStatement(SAVE_SQL)) {
@@ -182,6 +231,14 @@ public class BookLendingDao implements Dao<Long, BookLending> {
             AND book_id = ?
             """;
 
+    /**
+     * Deletes a book lending record for a specific reader and book by their IDs.
+     *
+     * @param readerId the reader's ID
+     * @param bookId   the book's ID
+     * @return true if the record was successfully deleted; false otherwise
+     * @throws DaoException if there is a data access error
+     */
     @Override
     public boolean delete(Long readerId, Long bookId) {
         try (var connection = ConnectionManager.getConnection();
