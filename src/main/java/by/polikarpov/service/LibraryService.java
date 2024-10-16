@@ -8,12 +8,21 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Service class responsible for managing library operations.
+ * It acts as a layer between the presentation layer and the data access layer.
+ */
 public class LibraryService implements Service<Long, LibraryDto> {
 
     private static final LibraryService INSTANCE = new LibraryService();
 
     private LibraryDao libraryDao;
 
+    /**
+     * Returns the singleton instance of the LibraryService.
+     *
+     * @return the singleton instance of LibraryService
+     */
     public static LibraryService getInstance() {
         return INSTANCE;
     }
@@ -22,10 +31,20 @@ public class LibraryService implements Service<Long, LibraryDto> {
         this.libraryDao = LibraryDao.getInstance();
     }
 
+    /**
+     * Sets the LibraryDao to be used by the service.
+     *
+     * @param libraryDao the LibraryDao to set
+     */
     public void setLibraryDao(LibraryDao libraryDao) {
         this.libraryDao = libraryDao;
     }
 
+    /**
+     * Retrieves all libraries from the data access layer and transforms them into DTOs.
+     *
+     * @return a list of LibraryDto representing all the libraries
+     */
     @Override
     public List<LibraryDto> getAll() {
         return libraryDao.findAll().stream()
@@ -33,6 +52,12 @@ public class LibraryService implements Service<Long, LibraryDto> {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves a library by its ID.
+     *
+     * @param id the ID of the library to retrieve
+     * @return an Optional containing the LibraryDto if found, otherwise an empty Optional
+     */
     @Override
     public Optional<LibraryDto> getById(Long id) {
         return libraryDao.findById(id).map(
@@ -40,12 +65,23 @@ public class LibraryService implements Service<Long, LibraryDto> {
         );
     }
 
+    /**
+     * Adds a new library to the database.
+     *
+     * @param entity the LibraryDto representing the library to add
+     */
     @Override
     public void add(LibraryDto entity) {
         Library library = buildLibrary(entity);
         libraryDao.save(library);
     }
 
+    /**
+     * Updates an existing library in the database.
+     *
+     * @param entity the LibraryDto representing the library to update
+     * @throws IllegalArgumentException if the library does not exist
+     */
     @Override
     public void update(LibraryDto entity) {
         if (entity.id() == null || libraryDao.findById(entity.id()).isEmpty()) {
@@ -56,6 +92,12 @@ public class LibraryService implements Service<Long, LibraryDto> {
         libraryDao.update(library);
     }
 
+    /**
+     * Deletes a library from the database by its ID.
+     *
+     * @param id the ID of the library to delete
+     * @throws IllegalArgumentException if the library does not exist
+     */
     @Override
     public void delete(Long id) {
         if (libraryDao.findById(id).isEmpty()) {
@@ -64,6 +106,12 @@ public class LibraryService implements Service<Long, LibraryDto> {
         libraryDao.delete(id);
     }
 
+    /**
+     * Builds a Library entity from a LibraryDto.
+     *
+     * @param entity the LibraryDto to convert into an entity
+     * @return the constructed Library entity
+     */
     private Library buildLibrary(LibraryDto entity) {
         Library library = new Library();
         library.setLibraryName(entity.libraryName());
