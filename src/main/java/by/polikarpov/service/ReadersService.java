@@ -6,7 +6,6 @@ import by.polikarpov.entity.Readers;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Service class responsible for managing reader operations.
@@ -49,7 +48,7 @@ public class ReadersService implements Service<Long, ReadersDto> {
     public List<ReadersDto> getAll() {
         return readersDao.findAll().stream()
                 .map(reader -> new ReadersDto(reader.getId(), reader.getReadersName()))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**

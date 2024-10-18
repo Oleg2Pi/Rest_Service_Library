@@ -12,6 +12,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -53,7 +54,7 @@ public class BookServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String idParam = req.getParameter("id");
-        if (idParam != null && !idParam.isEmpty()) {
+        if (StringUtils.isNotBlank(idParam)) {
             Long id = Long.parseLong(idParam);
             List<ReadersDto> readers = BookLendingService.getInstance().getByBookId(id);
             booksService.getById(id).ifPresentOrElse(
@@ -96,17 +97,11 @@ public class BookServlet extends HttpServlet {
         String author = req.getParameter("author");
         String libraryId = req.getParameter("libraryId");
 
-        if (idParam != null && !idParam.isEmpty() && title != null && !title.isEmpty()
-            && author != null && !author.isEmpty() && libraryId != null && !libraryId.isEmpty()) {
+        if (isUpdateRequest(idParam, title, author, libraryId)) {
             doPut(req, resp);
-        } else if (title != null && !title.isEmpty() && author != null && !author.isEmpty()
-                   && libraryId != null && !libraryId.isEmpty()) {
-
-            BooksDto bookDto = new BooksDto(null, title, author, getLibrary(libraryId, resp));
-            booksService.add(bookDto);
-
-            resp.sendRedirect(req.getContextPath() + "/libraries?id=" + libraryId);
-        } else if (idParam != null && !idParam.isEmpty() && libraryId != null && !libraryId.isEmpty()) {
+        } else if (isCreateRequest(title, author, libraryId)) {
+            handleCreateRequest(title, author, libraryId, req, resp);
+        } else if (isDeleteRequest(idParam, libraryId)) {
             doDelete(req, resp);
         } else {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Book's data cannot be empty");
@@ -114,27 +109,77 @@ public class BookServlet extends HttpServlet {
     }
 
     /**
+     * Check method for Handle PUT Request
+     *
+     * @param idParam
+     * @param title
+     * @param author
+     * @param libraryId
+     * @return boolean
+     */
+    private boolean isUpdateRequest(String idParam, String title, String author, String libraryId) {
+        return StringUtils.isNotBlank(idParam) && StringUtils.isNotBlank(title)
+               && StringUtils.isNotBlank(author) && StringUtils.isNotBlank(libraryId);
+    }
+
+    /**
+     * Check method for Handle POST Request
+     *
+     * @param title
+     * @param author
+     * @param libraryId
+     * @return  boolean
+     */
+    private boolean isCreateRequest(String title, String author, String libraryId) {
+        return StringUtils.isNotBlank(title) && StringUtils.isNotBlank(author)
+               && StringUtils.isNotBlank(libraryId);
+    }
+
+    /**
+     * Check method for Handle DELETE Request
+     *
+     * @param idParam
+     * @param libraryId
+     * @return boolean
+     */
+    private boolean isDeleteRequest(String idParam, String libraryId) {
+        return StringUtils.isNotBlank(idParam) && StringUtils.isNotBlank(libraryId);
+    }
+
+    /**
+     * Handle POST Request that create new book
+     *
+     * @param title
+     * @param author
+     * @param libraryId
+     * @param req
+     * @param resp
+     * @throws IOException
+     */
+    private void handleCreateRequest(String title, String author, String libraryId, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        BooksDto bookDto = new BooksDto(null, title, author, getLibrary(libraryId, resp));
+        booksService.add(bookDto);
+        resp.sendRedirect(req.getContextPath() + "/libraries?id=" + libraryId);
+    }
+
+    /**
      * Handles PUT requests for updating existing books.
      *
      * @param req  the HttpServletRequest object
      * @param resp the HttpServletResponse object
-     * @throws ServletException if an error occurs during request processing
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
-    public void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (req.getParameter("id") == null || req.getParameter("id").isEmpty()
-            || req.getParameter("title") == null || req.getParameter("title").isEmpty()
-            || req.getParameter("author") == null || req.getParameter("author").isEmpty()
-            || req.getParameter("libraryId") == null || req.getParameter("libraryId").isEmpty()) {
+    public void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String idParam = req.getParameter("id");
+        String title = req.getParameter("title");
+        String author = req.getParameter("author");
+        String libraryId = req.getParameter("libraryId");
+
+        if (!isUpdateRequest(idParam, title, author, libraryId)) {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Book's data not correct");
         } else {
-            Long id = Long.valueOf(req.getParameter("id"));
-            String title = req.getParameter("title");
-            String author = req.getParameter("author");
-            String libraryId = req.getParameter("libraryId");
-
-            var bookDto = new BooksDto(id, title, author, getLibrary(libraryId, resp));
+            var bookDto = new BooksDto(Long.valueOf(idParam), title, author, getLibrary(libraryId, resp));
             booksService.update(bookDto);
             resp.sendRedirect(req.getContextPath() + "/libraries?id=" + libraryId);
         }
@@ -145,17 +190,17 @@ public class BookServlet extends HttpServlet {
      *
      * @param req  the HttpServletRequest object
      * @param resp the HttpServletResponse object
-     * @throws ServletException if an error occurs during request processing
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
-    public void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (req.getParameter("id") == null || req.getParameter("id").isEmpty() ||
-            req.getParameter("libraryId") == null || req.getParameter("libraryId").isEmpty()) {
+    public void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String idParam = req.getParameter("id");
+        String libraryId = req.getParameter("libraryId");
+
+        if (!isDeleteRequest(idParam, libraryId)) {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Not exists book");
         } else {
-            Long id = Long.valueOf(req.getParameter("id"));
-            booksService.delete(id);
+            booksService.delete(Long.valueOf(idParam));
             resp.sendRedirect(req.getContextPath() + "/libraries?id=" + req.getParameter("libraryId"));
         }
     }
@@ -177,5 +222,6 @@ public class BookServlet extends HttpServlet {
         Library library = new Library(libraryDto.libraryName());
         library.setId(libraryDto.id());
         return library;
+
     }
 }
