@@ -6,7 +6,6 @@ import by.polikarpov.entity.Library;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Service class responsible for managing library operations.
@@ -49,7 +48,7 @@ public class LibraryService implements Service<Long, LibraryDto> {
     public List<LibraryDto> getAll() {
         return libraryDao.findAll().stream()
                 .map(library -> new LibraryDto(library.getId(), library.getLibraryName()))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
