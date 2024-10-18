@@ -10,7 +10,6 @@ import by.polikarpov.entity.Readers;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Service class responsible for managing book lending operations.
@@ -55,7 +54,7 @@ public class BookLendingService implements Service<Long, BookLendingDto> {
                 .map(bookLending -> new BookLendingDto(
                         createReaderDto(bookLending.getReader()),
                         createBookDto(bookLending.getBook()))
-                ).collect(Collectors.toList());
+                ).toList();
     }
 
     private BooksDto createBookDto(Books book) {
@@ -134,7 +133,7 @@ public class BookLendingService implements Service<Long, BookLendingDto> {
                         book.getAuthor(),
                         book.getLibrary()
                 ))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -148,7 +147,7 @@ public class BookLendingService implements Service<Long, BookLendingDto> {
                 .map(reader -> new ReadersDto(
                         reader.getId(),
                         reader.getReadersName()
-                )).collect(Collectors.toList());
+                )).toList();
     }
 
     /**
@@ -165,7 +164,7 @@ public class BookLendingService implements Service<Long, BookLendingDto> {
                         book.getAuthor(),
                         book.getLibrary()
                 ))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private BookLending buildBookLending(BookLendingDto entity) {
