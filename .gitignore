@@ -51,6 +51,6 @@ build/
 hs_err_pid*
 
 # The various target folders
-*target/
+/target/
 *.iml
-.idea
+/.idea/
