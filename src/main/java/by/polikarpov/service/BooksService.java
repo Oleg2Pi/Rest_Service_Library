@@ -6,7 +6,6 @@ import by.polikarpov.entity.Books;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Service class responsible for operations related to books.
@@ -49,7 +48,7 @@ public class BooksService implements Service<Long, BooksDto> {
     public List<BooksDto> getAll() {
         return booksDao.findAll().stream()
                 .map(book -> new BooksDto(book.getId(), book.getTitle(), book.getAuthor(), book.getLibrary()))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -74,7 +73,7 @@ public class BooksService implements Service<Long, BooksDto> {
     public List<BooksDto> getAllByLibraryId(Long id) {
         return booksDao.findAllByLibraryId(id).stream()
                 .map(book -> new BooksDto(book.getId(), book.getTitle(), book.getAuthor(), book.getLibrary()))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
