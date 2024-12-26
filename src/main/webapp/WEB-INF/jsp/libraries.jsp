@@ -68,9 +68,5 @@
         <td><a href="${PageContext.request.contextPath}/books">View</a></td>
     </tr>
 </table>
-
-<h1>Приложение было успешно обновлено!</h1>
-    <p>Это сообщение демонстрирует работу автоматического обновления в Jenkins.</p>
-<h1> HELOO </h1>
 </body>
 </html>
